@@ -14,12 +14,49 @@
 	</ul>
 
 	<h2>Built Branches</h2>
-	<ul>
-
-	<j:forEach var="branch" items="${it.buildsByBranchName.keySet()}">
-	<li><j:choose><j:when test="${branch}==''}">(unnamed)</j:when><j:otherwise>${branch}</j:otherwise></j:choose>: ${it.buildsByBranchName.get(branch).toString()}</li>
-	</j:forEach>
-	</ul>
+	  <t:setIconSize/>
+	  <table class="sortable pane bigtable" id="projectStatus">
+	    <thead>
+	    <tr>
+	      <th><st:nbsp/></th>
+	      <!-- TODO: Localization? -->
+	      <th>Branch</th>
+	      <th>Last Build</th>
+	    </tr>
+	    </thead>
+	    
+	    <tbody>
+	    <!-- TODO Probably should not be hard-coded.  Not sure where this should be specified. -->
+		<j:set var="imagesUrl" value="/images"/>
+		
+		<j:forEach var="branch" items="${it.buildsByBranchName.keySet()}">
+			<j:set var="b" value="${it.buildsByBranchName.get(branch)}"/>
+	      <tr>
+	      	<!-- Note: this build result only indicates whether the git operation was successful, not the whole build :-( -->
+	      	<!-- the git module puts in a null build result for success rather than a Result.SUCCESS -->
+	        <j:choose>
+	      	    <j:when test="${b.buildResult == null}">
+	      			<td data="0"><img src="/images/${iconSize}/blue.png"/></td>
+	      		</j:when>
+	      		<j:otherwise>
+			        <td data="${b.buildResult.color.ordinal()}">
+			        	<img src="/images/${iconSize}/${b.buildResult.color.image}"
+				             alt="${b.buildResult.color.description}" class="icon${iconSize}"/>
+			        </td>
+			    </j:otherwise>
+			</j:choose>
+	        <td data="${branch}">
+	        	${branch}
+	        </td>
+	        <td data="${b.buildNumber}">
+	          Build <a href="../../${b.buildNumber}/">#${b.buildNumber}</a>
+	        </td>
+	        <!-- TODO Ideally show last success, last failure, last stable, weather indicator too -->
+	      </tr>
+	    </j:forEach>
+	    </tbody>
+	    <tfoot></tfoot>
+	  </table>
 
 	</l:main-panel>
   	</l:layout>

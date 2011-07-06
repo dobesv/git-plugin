@@ -1,6 +1,8 @@
 package hudson.plugins.git.util;
 
+import hudson.model.Hudson;
 import hudson.model.Result;
+import hudson.model.Run;
 import hudson.plugins.git.Revision;
 
 import java.io.Serializable;

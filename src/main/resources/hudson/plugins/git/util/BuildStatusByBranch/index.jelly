@@ -1,0 +1,69 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<l:layout title="Git">
+	
+	
+    <l:main-panel>
+	    <st:include it="${it.owner}" page="sidepanel.jelly" />
+       	<h1>Per-Branch Build Status</h1>
+
+	  <t:setIconSize/>
+	  <table class="sortable pane bigtable" id="projectStatus">
+	    <thead>
+	    <tr>
+	      <th><st:nbsp/></th>
+	      <th><st:nbsp/></th>
+	      <!-- TODO: Localization? -->
+	      <th>Branch</th>
+	      <th>Last Success</th>
+	      <th>Last Failure</th>
+	    </tr>
+	    </thead>
+	    
+	    <tbody>
+	    <!-- TODO Probably should not be hard-coded.  Not sure where this should be specified. -->
+		<j:set var="imagesUrl" value="/images"/>
+		
+		<j:forEach var="b" items="${it.map.values()}">
+	      <tr>
+	        <td data="${b.lastResult.color.ordinal()}">
+		        <img src="/images/${iconSize}/${b.lastResult.color.image}"
+		             alt="${b.lastResult.color.description}" class="icon${iconSize}"/>
+	        </td>
+	        <j:set var="healthReport" value="${b.healthReport}"/>
+	        <td>
+		        <img src="/images/${iconSize}/${healthReport.iconUrl}"
+		             alt="${healthReport.description}" class="icon${iconSize}"/>
+	        </td>
+	        <td data="${b.branchName}">
+	        	${b.branchName}
+	        </td>
+	        <td data="${b.lastSuccessBuildNumber}">
+	        	<j:choose>
+	        		<j:when test="${b.lastSuccessBuildNumber > 0}">
+	          			<a href="../${b.lastSuccessBuildNumber}/">#${b.lastSuccessBuildNumber}</a>
+	          		</j:when>
+	          		<j:otherwise>
+	          			No Successes
+	          		</j:otherwise>
+	          	</j:choose>
+	        </td>
+	        <td data="${b.lastFailureBuildNumber}">
+	        	<j:choose>
+	        		<j:when test="${b.lastFailureBuildNumber > 0}">
+	          			<a href="../${b.lastFailureBuildNumber}/">#${b.lastFailureBuildNumber}</a>
+	          		</j:when>
+	          		<j:otherwise>
+	          			No failures
+	          		</j:otherwise>
+	          	</j:choose>
+	        </td>
+	        <!-- TODO Can I insert a button to trigger a build of this branch ? -->
+	      </tr>
+	    </j:forEach>
+	    </tbody>
+	    <tfoot></tfoot>
+	  </table>
+
+	</l:main-panel>
+  	</l:layout>
+</j:jelly>
