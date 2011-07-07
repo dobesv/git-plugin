@@ -25,7 +25,6 @@ import org.jvnet.localizer.Localizable;
  */
 public class BuildStatusByBranch implements Action {
     public final TreeMap<String,BranchBuildStatus> map = new TreeMap<String,BranchBuildStatus>();
-	private transient Job<?, ?> job;
 
     public String getDisplayName() {
         return "Per-Branch Build Status";
@@ -175,7 +174,6 @@ public class BuildStatusByBranch implements Action {
 		}
     }
 	public BuildStatusByBranch update(Job<?,?> project, Run<?,?> r, List<BuildData> buildDataList) {
-		this.job = project;
 		for(BuildData bd : buildDataList) {
 			for(Entry<String, Build> entry : bd.getBuildsByBranchName().entrySet()) {
 				String branchName = entry.getKey();
@@ -190,11 +188,4 @@ public class BuildStatusByBranch implements Action {
 		}
 		return this;
 	}
-	
-	// Need a pointer to the project so we can display the project navigation menu
-	// TODO Will this be reliable ?  Is there a more sensible way to have a reference to the project?
-    public Job<?,?> getOwner() {
-        return job;
-    }
-
 }
