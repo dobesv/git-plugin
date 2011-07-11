@@ -21,7 +21,7 @@
 	    <!-- TODO Probably should not be hard-coded.  Not sure where this should be specified. -->
 		<j:set var="imagesUrl" value="/images"/>
 		
-		<j:forEach var="b" items="${it.map.values()}">
+		<j:forEach var="b" items="${it.buildsToDisplay()}">
 	      <tr>
 	        <td data="${b.lastResult.color.ordinal()}">
 		        <img src="${imagesURL}/${iconSize}/${b.lastResult.color.image}"

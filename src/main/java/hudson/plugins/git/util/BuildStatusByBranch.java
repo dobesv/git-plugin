@@ -1,22 +1,21 @@
 package hudson.plugins.git.util;
 
-import hudson.Extension;
-import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.HealthReport;
 import hudson.model.Messages;
 import hudson.model.Result;
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.model.listeners.RunListener;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.jvnet.localizer.Localizable;
 
 /**
@@ -179,6 +178,8 @@ public class BuildStatusByBranch implements Action {
 				String branchName = entry.getKey();
 				int buildNumber = entry.getValue().getBuildNumber();
 				Run<?,?> lastBuild = project.getBuildByNumber(buildNumber);
+				if(lastBuild == null)
+					continue; // Skip builds that are too old for the specified time range
 				BranchBuildStatus branchStatus = map.get(branchName);
 				BranchBuildStatus newStatus;
 				if(branchStatus != null) newStatus = branchStatus.merge(lastBuild);
@@ -187,5 +188,17 @@ public class BuildStatusByBranch implements Action {
 			}
 		}
 		return this;
+	}
+	
+	/**
+	 * Return a collection of builds which were built "recently enough" based on the 
+	 * "days to keep branch status in view" setting.
+	 */
+	public Collection<BranchBuildStatus> buildsToDisplay() {
+		return map.values();
+	}
+	
+	public int numberOfBranchesWithBuildStatus() {
+		return map.size();
 	}
 }
